@@ -60,7 +60,7 @@ var graph = {
         return "translate("+x+","+y+")"
       })
     //add any new bars
-    selection.enter().append("rect")//.transition().duration(500)
+    selection.enter().append("rect")
       .style("fill", function(d,i){
         return scales.colorScale(i);
       })

@@ -19,10 +19,20 @@ var graph = {
   makeGraphComponents: function(){
     this.getDimensions();
     var components = this.components;
-    var atts = components.atts;
+    // var atts = components.atts;
     //append svg to container instead of body
-    components.svg = d3.select(".container").append("svg").attr("height",atts.height).attr("width",atts.width);
+    components.svg = d3.select(".container").append("svg")//.attr("height",atts.height).attr("width",atts.width);
     components.bars = components.svg.append("g");
+    // components.scales.xScale = d3.scale.linear().range([atts.margin,(atts.width-atts.margin)]);
+    // components.scales.yScale = d3.scale.linear().range([atts.height-(2*atts.margin),atts.margin]);
+    // components.scales.colorScale = d3.scale.linear().range(['teal','darkgreen']);
+    this.setDimensions();
+  },
+  //move parts from makeGraphComponents down here so it can be utilized in resize function
+  setDimensions: function(){
+    var components = this.components;
+    var atts = components.atts;
+    components.svg.attr("height",atts.height).attr("width",atts.width);
     components.scales.xScale = d3.scale.linear().range([atts.margin,(atts.width-atts.margin)]);
     components.scales.yScale = d3.scale.linear().range([atts.height-(2*atts.margin),atts.margin]);
     components.scales.colorScale = d3.scale.linear().range(['teal','darkgreen']);
@@ -85,17 +95,22 @@ var graph = {
   },
   //function invoked when window resizes
   resize:function(){
-    console.log("resizing")
+    this.getDimensions();
+    this.setDimensions();
   },
   //invoke all the above functions
   init: function(){
+    var self = this;
     this.makeGraphComponents();
     this.updateChart(this.makeDataset());
     //update with a new dataset every two seconds
     setInterval(function(){
       this.updateChart(this.makeDataset());
     }.bind(this),2000)
-    window.onresize = this.resize;
+    //bind resize event listener to window to call resize function
+    window.addEventListener('resize', function(){
+      this.resize();
+    }.bind(this));
   }
 }
 graph.init();
