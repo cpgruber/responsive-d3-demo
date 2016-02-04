@@ -22,16 +22,22 @@ var graph = {
     //append svg to container instead of body
     components.svg = d3.select(".container").append("svg");
     components.bars = components.svg.append("g");
+    //make scales
+    components.scales.xScale = d3.scale.linear();
+    components.scales.yScale = d3.scale.linear();
+    components.scales.colorScale = d3.scale.linear();
     this.setDimensions();
   },
   //move parts from makeGraphComponents down here so it can be utilized in resize function
   setDimensions: function(){
     var components = this.components;
     var atts = components.atts;
+    var scales = components.scales;
+    //set svg dimensions and scale ranges
     components.svg.attr("height",atts.height).attr("width",atts.width);
-    components.scales.xScale = d3.scale.linear().range([atts.margin,(atts.width-atts.margin)]);
-    components.scales.yScale = d3.scale.linear().range([atts.height-(2*atts.margin),atts.margin]);
-    components.scales.colorScale = d3.scale.linear().range(['teal','darkgreen']);
+    components.scales.xScale.range([atts.margin,(atts.width-atts.margin)]);
+    components.scales.yScale.range([atts.height-(2*atts.margin),atts.margin]);
+    components.scales.colorScale.range(['teal','darkgreen']);
   },
   //make a random dataset, length 5 to 10, range 0 to 30
   makeDataset:function(){
@@ -93,6 +99,19 @@ var graph = {
   resize:function(){
     this.getDimensions();
     this.setDimensions();
+    var atts = this.components.atts;
+    var scales = this.components.scales;
+    //recalculate bar width
+    var barCt = this.components.bars.selectAll("rect")[0].length;
+    var barW = ((atts.width-(2*atts.margin))/barCt)-atts.barGap;
+    //update bar widths
+    d3.selectAll("rect")
+      .attr("width",barW)
+      .attr("transform", function(d,i){
+        var x = scales.xScale(i)
+        var y = atts.height-atts.margin-scales.yScale(d)
+        return "translate("+x+","+y+")"
+      })
   },
   //invoke all the above functions
   init: function(){
