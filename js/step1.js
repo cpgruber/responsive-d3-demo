@@ -3,9 +3,9 @@ var graph = {
   //establish constant values
   components:{
     atts:{
-      height:500,
+      height:400,
       width:500,
-      margin:50,
+      margin:20,
       barGap:5
     },
     scales:{}
