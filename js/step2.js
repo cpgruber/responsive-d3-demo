@@ -83,10 +83,6 @@ var graph = {
     //remove any extra bars
     selection.exit().remove();
   },
-  //function invoked when window resizes
-  resize:function(){
-    console.log("resizing")
-  },
   //invoke all the above functions
   init: function(){
     this.makeGraphComponents();
@@ -95,7 +91,6 @@ var graph = {
     setInterval(function(){
       this.updateChart(this.makeDataset());
     }.bind(this),2000)
-    window.onresize = this.resize;
   }
 }
 graph.init();
